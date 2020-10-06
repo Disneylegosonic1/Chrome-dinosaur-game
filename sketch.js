@@ -1,4 +1,5 @@
 var trex, obstacles, ground, inground, clouds, trexRun, trexCollide, groundImg, cloudImg, obstacle1, obstacle2, obstacle3, obstacle4, obstacle5, obstacle6, obstacleGroup, cloudGroup, score, gameOver,overImg, reset, resetImg;
+var jump, die, checkpoint;
 var PLAY = 1;
 var END = 0;
 var gameState = "play";
@@ -15,7 +16,9 @@ function preload(){
   obstacle6 = loadImage("obstacle6.png");
   overImg = loadImage("gameOver.png");
   resetImg = loadImage("restart.png");
-  
+  jump = loadSound("jump.mp3");
+  die = loadSound("die.mp3");
+  checkpoint = loadSound("checkPoint.mp3");
 }
 function setup() {
   createCanvas(675, 200);
@@ -60,6 +63,7 @@ function draw() {
   }
   
   if(keyDown("space")&& trex.collide(inground)){
+    jump.play();
     trex.velocityY = -12;  
 
   }
@@ -72,6 +76,10 @@ function draw() {
   score = score + Math.round(getFrameRate()/60);
   text(score, 550, 25);
   
+  if(score % 100 === 0 && score>0){
+    checkpoint.play();
+  }
+    
   if(obstacleGroup.isTouching(trex)){
     text("hi", 200, 50);
     gameState = "end";
@@ -81,6 +89,7 @@ function draw() {
   Obstacles();
  }
  else if (gameState === "end"){
+   die.play();
    ground.velocityX = 0;
    trex.changeAnimation("trexCollide", trexCollide);
    trex.velocityY = 0;
